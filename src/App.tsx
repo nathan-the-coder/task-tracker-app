@@ -1,9 +1,10 @@
 // src/App.tsx
 import React, { useState, useEffect } from 'react';
 import { Task } from './types/Task';
-import { TaskForm } from '@/components/TaskForm';
-import { TaskList } from '@/components/TaskList';
+import { TaskForm } from './components/TaskForm';
+import { TaskList } from './components/TaskList';
 import { TaskStorage } from './services/TaskStorage';
+import { Button } from './components/ui/button';
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -45,7 +46,13 @@ function App() {
       </div>
       
       <div>
-        <h2 className="text-xl font-semibold mb-2">Your Tasks</h2>
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-semibold mb-2">Your Tasks</h2>
+          <Button type="submit" className="w-32">
+            New Task
+          </Button>
+        </div>
+
         <TaskList
           tasks={tasks}
           onToggleComplete={handleToggleComplete}
