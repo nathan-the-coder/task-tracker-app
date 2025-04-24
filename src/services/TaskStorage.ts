@@ -16,7 +16,7 @@ export const TaskStorage = {
   },
 
   addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>): Task => {
-    const tasks = TaskStorage.getTasks();
+    const tasks = TaskStorage.getTasks() ??  [];
 
     const newTask: Task = {
       ...task,
@@ -31,7 +31,7 @@ export const TaskStorage = {
 
   updateTask: (taskId: string, updates: Partial<Omit<Task, 'id' | 'createdAt' | 'updatedAt'>>): Task | null => {
 
-    const tasks = TaskStorage.getTasks();
+    const tasks = TaskStorage.getTasks() ??  [];
     const taskIndex = tasks.findIndex(t => t.id === taskId);
 
     if (taskIndex === -1) return null;
@@ -39,7 +39,7 @@ export const TaskStorage = {
     const updatedTask = {
       ...tasks[taskIndex],
       ...updates,
-      updateAt: new Date()
+      updatedAt: new Date()
     };
 
     tasks[taskIndex] = updatedTask;
@@ -48,7 +48,7 @@ export const TaskStorage = {
   },
 
   deleteTask: (taskId: string): boolean => {
-    const tasks = TaskStorage.getTasks();
+    const tasks = TaskStorage.getTasks() ??  [];
     const filteredTasks = tasks.filter(task => task.id !== taskId);
 
     if (filteredTasks.length === tasks.length) {

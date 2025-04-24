@@ -1,5 +1,4 @@
 // src/components/TaskForm.tsx
-import React from 'react';
 import { Task } from '../types/Task';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -20,9 +19,10 @@ interface TaskFormProps {
   onSubmit: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => void;
   initialTask?: Task;
   buttonText?: string;
+  onCancel: () =>  void;
 }
 
-export function TaskForm({ onSubmit, initialTask, buttonText = 'Add Task' }: TaskFormProps) {
+export function TaskForm({ onSubmit, initialTask, buttonText = 'Add Task', onCancel }: TaskFormProps) {
   // Define the form schema
   const formSchema = z.object({
     title: z.string().min(1, { message: "Task title is required" }),
@@ -98,9 +98,16 @@ export function TaskForm({ onSubmit, initialTask, buttonText = 'Add Task' }: Tas
           )}
         />
 
-        <Button type="submit" className="w-full">
-          {buttonText}
-        </Button>
+        <div className="flex justify-end gap-2 pt-2">
+          { onCancel && (
+            <Button type="button" variant="outline" onClick={onCancel}>
+              Cancel
+            </Button>
+          )}
+          <Button type="submit">
+            {buttonText}
+          </Button>
+        </div>
       </form>
     </Form>
   );

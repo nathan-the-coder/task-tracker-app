@@ -5,9 +5,20 @@ import { TaskForm } from './components/TaskForm';
 import { TaskList } from './components/TaskList';
 import { TaskStorage } from './services/TaskStorage';
 import { Button } from './components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Plus } from 'lucide-react'; 
+import { DialogDescription } from '@radix-ui/react-dialog';
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   
   useEffect(() => {
     // Load tasks from local storage on initial render
@@ -17,6 +28,9 @@ function App() {
   const handleAddTask = (newTask: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => {
     TaskStorage.addTask(newTask);
     setTasks(TaskStorage.getTasks());
+
+    // Close dialog after adding tasks
+    setIsDialogOpen(false);
   };
   
   const handleToggleComplete = (taskId: string) => {
@@ -38,19 +52,40 @@ function App() {
   
   return (
     <div className="max-w-lg mx-auto mt-8 p-4">
-      <h1 className="text-2xl font-bold mb-6">Task Tracker</h1>
       
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-2">Add New Task</h2>
-        <TaskForm onSubmit={handleAddTask} />
-      </div>
+      <header className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Task Tracker</h1>
+
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="flex items-center gap-1">
+              <Plus className="w-4 h-4" />
+              Add Task
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Add New Task</DialogTitle>
+              <DialogDescription>
+                Form for adding new tasks
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-4">
+              <TaskForm
+                onSubmit={handleAddTask}
+                onCancel={() =>  setIsDialogOpen(false)}
+                 />
+            </div>
+          </DialogContent>
+        </Dialog>
+      </header>
       
       <div>
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-semibold mb-2">Your Tasks</h2>
-          <Button type="submit" className="w-32">
-            New Task
-          </Button>
+          <span className="text-sm text-gray-500">
+            {tasks.length} {tasks.length ===   1 ? 'task' : 'tasks'}
+          </span>
         </div>
 
         <TaskList
